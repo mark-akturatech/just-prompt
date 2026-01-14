@@ -172,7 +172,7 @@ def list_models() -> List[str]:
         available_models = client.models.list()
         for m in available_models:
             if "generateContent" in m.supported_actions:
-            models.append(m.name)
+                models.append(m.name)
                 
         # Format model names - strip the "models/" prefix if present
         formatted_models = [model.replace("models/", "") for model in models]
