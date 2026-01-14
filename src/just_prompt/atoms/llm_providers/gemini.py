@@ -171,12 +171,8 @@ def list_models() -> List[str]:
         models = []
         available_models = client.models.list()
         for m in available_models:
-            # Check if the model supports content generation
-            if hasattr(m, 'supported_generation_methods') and "generateContent" in m.supported_generation_methods:
-                models.append(m.name)
-            else:
-                # If supported_generation_methods is not available, include all models
-                models.append(m.name)
+            if "generateContent" in m.supported_actions:
+            models.append(m.name)
                 
         # Format model names - strip the "models/" prefix if present
         formatted_models = [model.replace("models/", "") for model in models]
