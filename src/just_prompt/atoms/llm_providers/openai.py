@@ -1,5 +1,5 @@
 """
-OpenAI provider implementation.
+OpenAI provider implementation - with responses-only models support.
 """
 
 """OpenAI provider implementation with support for o‑series *reasoning effort* suffixes.
@@ -41,6 +41,7 @@ client = OpenAI(api_key=os.environ.get("OPENAI_API_KEY"))
 
 
 _REASONING_ELIGIBLE_MODELS = {"o4-mini", "o3-mini", "o3", "o3-pro", "gpt-5", "gpt-5-mini", "gpt-5-nano", "gpt-5-pro", "gpt-5.1", "gpt-5.1-pro", "gpt-5.2", "gpt-5.2-pro"}
+_RESPONSES_ONLY_MODELS = {"o3-pro", "o1-pro", "gpt-5-pro", "gpt-5.1-pro", "gpt-5.2-pro"}
 _REASONING_LEVELS = {"low", "medium", "high"}
 
 
@@ -135,6 +136,11 @@ def prompt(text: str, model: str) -> str:
     """
 
     base_model, effort = parse_reasoning_suffix(model)
+
+    # Models that ONLY work with Responses API (not chat completions)
+    if base_model in _RESPONSES_ONLY_MODELS:
+        # Default to "medium" effort if no suffix provided
+        return _prompt_with_reasoning(text, base_model, effort or "medium")
 
     if effort:
         return _prompt_with_reasoning(text, base_model, effort)
